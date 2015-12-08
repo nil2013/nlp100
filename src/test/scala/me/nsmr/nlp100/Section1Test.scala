@@ -40,10 +40,17 @@ class Section1Test extends FeatureSpec with GivenWhenThen {
   }
   feature("""与えられたシーケンス（文字列やリストなど）からn-gramを作る関数を作成せよ．この関数を用い，"I am an NLPer"という文から単語bi-gram，文字bi-gramを得よ．""") {
     scenario("""Q.05-1: n-gramを作る関数を用い，"I am an NLPer"という文から単語bi-gramを得よ．""") {
-      assert(question05_1("I am an NLPer") == Seq("I"))
+      assert(question05_1("I am an NLPer") == Seq(
+          ("I", Some("am")), ("am", Some("an")), ("an", Some("NLPer")), ("NLPer", None)
+          ))
     }
     scenario("""Q.05: n-gramを作る関数を用い，"I am an NLPer"という文から文字bi-gramを得よ．""") {
-      assert(question05_2("I am an NLPer") == Seq('I'))
+      assert(question05_2("I am an NLPer") == Seq(
+          ('I', None),
+          ('a', Some('m')), ('m', None),
+          ('a', Some('n')), ('n', None),
+          ('N', Some('L')), ('L', Some('P')), ('P', Some('e')), ('e', Some('r')), ('r', None)
+          ))
     }
   }
   feature("""Q.06: "paraparaparadise"と"paragraph"に含まれる文字bi-gramの集合を，それぞれ, XとYとして求め，XとYの和集合，積集合，差集合を求めよ．さらに，'se'というbi-gramがXおよびYに含まれるかどうかを調べよ．""") {
