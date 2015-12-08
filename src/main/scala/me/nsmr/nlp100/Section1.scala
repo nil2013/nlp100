@@ -11,26 +11,33 @@ object Section1 extends Section {
    * 00. 文字列の逆順
    * 文字列"stressed"の文字を逆に（末尾から先頭に向かって）並べた文字列を得よ．
    */
-  def question00: String = "stressed".reverse
+  def question00(input: String): String = input.reverse
 
   /**
    * 01. 「パタトクカシーー」
    * 「パタトクカシーー」という文字列の1,3,5,7文字目を取り出して連結した文字列を得よ．
    */
-  def question01: String = List(1,3,5,7).map(i => "パタトクカシーー"(i-1)).mkString
+  def question01(input: String, positions: Int*): String = positions.map(i => input(i-1)).mkString
 
   /**
    * 02. 「パトカー」＋「タクシー」＝「パタトクカシーー」
    * 「パトカー」＋「タクシー」の文字を先頭から交互に連結して文字列「パタトクカシーー」を得よ．
    */
-  def question02: String =
-    (0 to "パトカー".size.min("タクシー".size)-1).map(i => new String(Array("パトカー"(i), "タクシー"(i)))).mkString
+  def question02(x: String, y: String): String = {
+    @tailrec def solve(x: List[Char], y: List[Char], result: List[Char] = Nil): String = {
+      (x, y) match {
+        case (Nil, _) => result.reverse.mkString
+        case (_, Nil) => result.reverse.mkString
+        case (x :: tailX, y :: tailY) => solve(tailX, tailY, y :: x :: result)
+      }
+    }
+    solve(x.toList, y.toList)
+  }
 
   /**
    * 03. 円周率
    * "Now I need a drink, alcoholic of course, after the heavy lectures involving quantum mechanics."という文を単語に分解し，各単語の（アルファベットの）文字数を先頭から出現順に並べたリストを作成せよ．
    */
-//  def getCharSeq(input: String): Seq[Char] = input.toList
   def getWordSeq(input: String): List[String] = {
     @tailrec def solve(chars: List[Char], word: String, result: List[String]): List[String] = {
       chars match {
@@ -43,15 +50,14 @@ object Section1 extends Section {
     }
     solve(input.toList, "", Nil)
   }
-  def question03: Seq[Int] = getWordSeq("Now I need a drink, alcoholic of course, after the heavy lectures involving quantum mechanics.").map(_.size)
+  def question03(input: String): Seq[Int] = getWordSeq(input).map(_.size)
 
   /**
    * 04. 元素記号
    * "Hi He Lied Because Boron Could Not Oxidize Fluorine. New Nations Might Also Sign Peace Security Clause. Arthur King Can."という文を単語に分解し，1, 5, 6, 7, 8, 9, 15, 16, 19番目の単語は先頭の1文字，それ以外の単語は先頭に2文字を取り出し，取り出した文字列から単語の位置（先頭から何番目の単語か）への連想配列（辞書型もしくはマップ型）を作成せよ．
    */
-  def question04: Map[Symbol, Int] = {
-    val words = getWordSeq("Hi He Lied Because Boron Could Not Oxidize Fluorine. New Nations Might Also Sign Peace Security Clause. Arthur King Can.")
-    val positions = Seq(1, 5, 6, 7, 8, 9, 15, 16, 19)
+  def question04(input: String, positions: Int*): Map[Symbol, Int] = {
+    val words = getWordSeq(input)
     @tailrec def solve(words: List[String], pos: Int, map: Map[Symbol, Int]): Map[Symbol, Int] = {
       words match {
         case Nil => map
@@ -105,7 +111,19 @@ object Section1 extends Section {
    * 07. テンプレートによる文生成
    * 引数x, y, zを受け取り「x時のyはz」という文字列を返す関数を実装せよ．さらに，x=12, y="気温", z=22.4として，実行結果を確認せよ．
    */
-  def question07(x: Any, y: Any, z: Any): String = s"${x}時の${y}は$z"
+  def question07(template: String, x: Any, y: Any, z: Any): String = {
+    @tailrec def solve(chars: List[Char], result: List[Any] = Nil): String = {
+      chars match {
+        case Nil => result.reverse.mkString
+        case 'x'  :: tail => solve(tail, x :: result)
+        case 'y'  :: tail => solve(tail, y :: result)
+        case 'z'  :: tail => solve(tail, z :: result)
+        case char :: tail => solve(tail, char :: result)
+      }
+    }
+    solve(template.toList)
+  }
+
   /**
    * 08. 暗号文
    * 与えられた文字列の各文字を，以下の仕様で変換する関数cipherを実装せよ．
@@ -116,7 +134,9 @@ object Section1 extends Section {
    */
   def question08(input: String): String = input.map {
     case x if x.isLower => (219-x).toChar
-    case x => x }.mkString
+    case x => x
+  }
+
   /**
    * 09. Typoglycemia
    * スペースで区切られた単語列に対して，各単語の先頭と末尾の文字は残し，それ以外の文字の順序をランダムに並び替えるプログラムを作成せよ．ただし，長さが４以下の単語は並び替えないこととする．適当な英語の文（例えば"I couldn't believe that I could actually understand what I was reading : the phenomenal power of the human mind ."）を与え，その実行結果を確認せよ．
