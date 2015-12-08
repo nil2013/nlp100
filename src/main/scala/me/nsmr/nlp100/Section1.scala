@@ -36,7 +36,7 @@ object Section1 extends Section {
       chars match {
         case Nil if word.size == 0 => result.reverse
         case Nil if word.size >  0 => solve(Nil, "", word :: result)
-        case char :: tail if char < 48 || char.isSpaceChar =>
+        case char :: tail if char != ''' && (char < 48 || char.isSpaceChar) =>
           solve(tail, "", if(word.size>0){word :: result} else {result} )
         case char :: tail => solve(tail, word + char, result)
       }
@@ -114,10 +114,44 @@ object Section1 extends Section {
    * その他の文字はそのまま出力
    * この関数を用い，英語のメッセージを暗号化・復号化せよ．
    */
-  def question08(input: String): String = notYet
+  def question08(input: String): String = input.map {
+    case x if x.isLower => (219-x).toChar
+    case x => x }.mkString
   /**
    * 09. Typoglycemia
    * スペースで区切られた単語列に対して，各単語の先頭と末尾の文字は残し，それ以外の文字の順序をランダムに並び替えるプログラムを作成せよ．ただし，長さが４以下の単語は並び替えないこととする．適当な英語の文（例えば"I couldn't believe that I could actually understand what I was reading : the phenomenal power of the human mind ."）を与え，その実行結果を確認せよ．
    */
-  def question09(input: String): String = notYet
+  def typoglycemia(input: String): String = {
+      val rnd = new scala.util.Random
+      @tailrec def solve(chars: List[Char], first: Char, last: Char, result: List[Char]): String = {
+        chars match {
+          case Nil => (first :: (last :: result).reverse).mkString
+          case char :: tail =>
+            if(rnd.nextBoolean()) solve(tail, first, last, char :: result)
+            else solve(tail, first, last, result :+ char)
+        }
+      }
+      if(input.size<3) input
+      else solve(input.toList.drop(1).take(input.size-2), input(0), input.last, Nil)
+    }
+  def question09(input: String): String = {
+    @tailrec def solve(words: List[String], result: List[String]): List[String] = {
+      words match {
+        case Nil => result.reverse
+        case head :: tail if head.size > 4 => solve(tail, typoglycemia(head) :: result)
+        case head :: tail if head.size <=4 => solve(tail, head :: result)
+      }
+    }
+    solve(getWordSeq(input), Nil).mkString(" ")
+  }
+  @tailrec def isTypoglycemiaSets(x: List[String], y: List[String]): Boolean = {
+    (x, y) match {
+      case (Nil, Nil) => true
+      case (x :: tailX, y :: tailY) if (x.size == y.size && x.head == y.head && x.last == y.last) =>
+        def structure(str: String) = str.groupBy(x => x).map{ case (c, str) => c -> str.size }
+        if(structure(x) == structure(y)) isTypoglycemiaSets(tailX, tailY)
+        else false
+      case _ => false
+    }
+  }
 }
