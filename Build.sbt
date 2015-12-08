@@ -17,6 +17,7 @@ assemblyMergeStrategy in assembly := {
 }
 
 libraryDependencies ++= Seq(
+  "org.scalatest" % "scalatest_2.10" % "2.2.1" % Test
 	)
 
 scalacOptions in (Compile,doc) := Seq("-groups", "-implicits", "-diagrams")
