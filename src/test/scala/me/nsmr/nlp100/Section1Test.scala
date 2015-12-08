@@ -71,8 +71,11 @@ class Section1Test extends FeatureSpec with GivenWhenThen {
           ('a', Some('d')), ('d', Some('i')), ('i', Some('s')), ('s', Some('e')),('e', None)
           ))
     }
-    scenario("'se'というbi-gramがXおよびYに含まれるかどうか") {
-      assert(question06_4(x, y, ('s', 'e')))
+    scenario("'se'というbi-gramがXに含まれるかどうか（含まれている）") {
+      assert(question06_4(x, ('s', Some('e'))))
+    }
+    scenario("'se'というbi-gramがYに含まれるかどうか（含まれていない）") {
+      assert(!question06_4(y, ('s', Some('e'))))
     }
   }
   feature("""Q.07: 引数x, y, zを受け取り「x時のyはz」という文字列を返す関数を実装せよ．さらに，x=12, y="気温", z=22.4として，実行結果を確認せよ．""") {
