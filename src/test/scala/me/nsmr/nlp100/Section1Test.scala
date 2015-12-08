@@ -59,15 +59,17 @@ class Section1Test extends FeatureSpec with GivenWhenThen {
     // pa ar ra ag gr ra ap ph
     scenario("和集合を求める") {
       assert(question06_1(x, y) == Set(
-          ('p', 'a'), ('a', 'r'), ('r', 'a'), ('a', 'g'), ('g', 'r'), ('r', 'a'), ('a', 'p'), ('p', 'h'),
-          ('a', 'd'), ('d', 'i'), ('i', 's'), ('s', 'e')
+          ('p', Some('a')), ('a', Some('r')), ('r', Some('a')), ('a', Some('g')), ('g', Some('r')), ('r', Some('a')), ('a', Some('p')), ('p', Some('h')), ('h', None),
+          ('a', Some('d')), ('d', Some('i')), ('i', Some('s')), ('s', Some('e')), ('e', None)
           ))
     }
     scenario("積集合を求める") {
-      assert(question06_2(x, y) == Set( ('p', 'a'),('a', 'r'),('r', 'a'),('a', 'p') ))
+      assert(question06_2(x, y) == Set( ('p', Some('a')),('a', Some('r')),('r', Some('a')),('a', Some('p')) ))
     }
     scenario("差集合を求める") {
-      assert(question06_3(x, y) == Set( ('a', 'g'), ('g', 'r'),('p', 'h') ))
+      assert(question06_3(x, y) == Set(
+          ('a', Some('d')), ('d', Some('i')), ('i', Some('s')), ('s', Some('e')),('e', None)
+          ))
     }
     scenario("'se'というbi-gramがXおよびYに含まれるかどうか") {
       assert(question06_4(x, y, ('s', 'e')))
