@@ -38,6 +38,8 @@ object Section1 extends Section {
    * 03. 円周率
    * "Now I need a drink, alcoholic of course, after the heavy lectures involving quantum mechanics."という文を単語に分解し，各単語の（アルファベットの）文字数を先頭から出現順に並べたリストを作成せよ．
    */
+  def question03(input: String): Seq[Int] = getWordSeq(input).map(_.size)
+
   def getWordSeq(input: String): List[String] = {
     @tailrec def solve(chars: List[Char], word: String, result: List[String]): List[String] = {
       chars match {
@@ -50,7 +52,6 @@ object Section1 extends Section {
     }
     solve(input.toList, "", Nil)
   }
-  def question03(input: String): Seq[Int] = getWordSeq(input).map(_.size)
 
   /**
    * 04. 元素記号
@@ -81,10 +82,13 @@ object Section1 extends Section {
     }
     solve(input.toList, Nil)
   }
+
+  /** 05-1. 与えられた文字列から単語bi-gramを得る */
   def question05_1(input: String): Seq[(String, Option[String])] = getNgram(getWordSeq(input), 2).collect {
     case x :: y :: _ => (x, Some(y))
     case x :: Nil => (x, None)
   }
+  /** 05-2. 与えられた文字列から文字bi-gramを得る */
   def question05_2(input: String): Seq[(Char, Option[Char])] = getWordSeq(input).map(word => getNgram(word.toList, 2).collect{
     case x :: y :: _ => (x, Some(y))
     case x :: Nil => (x, None)
@@ -98,13 +102,13 @@ object Section1 extends Section {
     case x :: y :: _ => (x, Some(y))
     case x :: Nil => (x, None)
   }.toSet
-  // XとYの和集合
+  /** 06-1. 2つの文字列のbi-gramの集合の和集合を求める */
   def question06_1(x: String, y: String): Set[(Char, Option[Char])] = getBiGramSet(x) union getBiGramSet(y)
-  // XとYの積集合
+  /** 06-2. 2つの文字列のbi-gramの集合の積集合を求める */
   def question06_2(x: String, y: String): Set[(Char, Option[Char])] = getBiGramSet(x) intersect getBiGramSet(y)
-  // XとYの差集合
+  /** 06-3. 2つの文字列のbi-gramの集合の差集合を求める */
   def question06_3(x: String, y: String): Set[(Char, Option[Char])] = getBiGramSet(x) diff getBiGramSet(y)
-  // 'se'というbi-gramがXおよびYに含まれるかどうかを調べよ．
+  /** 06-4. 文字列のbi-gramの集合に、'se'というbi-gramが含まれるか、検査する */
   def question06_4(input: String, target: (Char, Option[Char])): Boolean = getBiGramSet(input) contains target
 
   /**
@@ -141,19 +145,6 @@ object Section1 extends Section {
    * 09. Typoglycemia
    * スペースで区切られた単語列に対して，各単語の先頭と末尾の文字は残し，それ以外の文字の順序をランダムに並び替えるプログラムを作成せよ．ただし，長さが４以下の単語は並び替えないこととする．適当な英語の文（例えば"I couldn't believe that I could actually understand what I was reading : the phenomenal power of the human mind ."）を与え，その実行結果を確認せよ．
    */
-  def typoglycemia(input: String): String = {
-      val rnd = new scala.util.Random
-      @tailrec def solve(chars: List[Char], first: Char, last: Char, result: List[Char]): String = {
-        chars match {
-          case Nil => (first :: (last :: result).reverse).mkString
-          case char :: tail =>
-            if(rnd.nextBoolean()) solve(tail, first, last, char :: result)
-            else solve(tail, first, last, result :+ char)
-        }
-      }
-      if(input.size<3) input
-      else solve(input.toList.drop(1).take(input.size-2), input(0), input.last, Nil)
-    }
   def question09(input: String): String = {
     @tailrec def solve(words: List[String], result: List[String]): List[String] = {
       words match {
@@ -163,6 +154,19 @@ object Section1 extends Section {
       }
     }
     solve(getWordSeq(input), Nil).mkString(" ")
+  }
+  def typoglycemia(input: String): String = {
+    val rnd = new scala.util.Random
+    @tailrec def solve(chars: List[Char], first: Char, last: Char, result: List[Char]): String = {
+      chars match {
+        case Nil => (first :: (last :: result).reverse).mkString
+        case char :: tail =>
+          if(rnd.nextBoolean()) solve(tail, first, last, char :: result)
+          else solve(tail, first, last, result :+ char)
+      }
+    }
+    if(input.size<3) input
+    else solve(input.toList.drop(1).take(input.size-2), input(0), input.last, Nil)
   }
   @tailrec def isTypoglycemiaSets(x: List[String], y: List[String]): Boolean = {
     (x, y) match {
