@@ -1,7 +1,7 @@
 organization := "me.nsmr"
 name := "Nlp100"
 version := "1.0"
-scalaVersion := "2.10.4"
+scalaVersion := "2.11.7"
 
 assemblyMergeStrategy in assembly := {
   case PathList("javax", "servlet", xs @ _*)           => MergeStrategy.first
